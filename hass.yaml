@@ -1,0 +1,47 @@
+alias: 用 mai 开空调
+description: ""
+trigger:
+  - platform: mqtt
+    topic: derakkuma/ac
+condition: []
+action:
+  - if:
+      - condition: state
+        entity_id: climate.lumi_mcn02_1afd_air_conditioner
+        attribute: hvac_action
+        state: cooling
+    then:
+      - service: climate.set_hvac_mode
+        metadata: {}
+        data:
+          hvac_mode: "off"
+        target:
+          entity_id: climate.lumi_mcn02_1afd_air_conditioner
+      - service: mqtt.publish
+        metadata: {}
+        data:
+          topic: derakkuma/status
+          payload_template: >-
+            AC Turned Off
+
+            Current Livingroom Temp
+            {{states("sensor.livingroom_temp_temperature")}}
+    else:
+      - service: climate.set_hvac_mode
+        metadata: {}
+        data:
+          hvac_mode: cool
+        target:
+          entity_id: climate.lumi_mcn02_1afd_air_conditioner
+      - service: mqtt.publish
+        metadata: {}
+        data:
+          topic: derakkuma/status
+          payload_template: >-
+            AC Turned On, Cooling to
+            {{state_attr("climate.lumi_mcn02_1afd_air_conditioner",
+            "target_temperature-2-3")}}
+
+            Current Livingroom Temp
+            {{states("sensor.livingroom_temp_temperature")}}
+mode: single

@@ -1,0 +1,6 @@
+mqttHost: 
+mqttUser: 
+mqttPass: 
+publishTopic: derakkuma/ac
+publishContent: qwq
+subscribeTopic: derakkuma/status
